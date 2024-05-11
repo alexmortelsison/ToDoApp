@@ -12,7 +12,15 @@ class DialogBox extends StatelessWidget {
         height: 120,
         child: Column(
           children: [
-            TextField(),
+            TextField(
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Add a New Task',
+              ),
+            ),
+            Row(
+              children: [],
+            ),
           ],
         ),
       ),
