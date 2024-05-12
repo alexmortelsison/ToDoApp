@@ -3,11 +3,10 @@ import 'package:todo_app/util/my_button.dart';
 
 class DialogBox extends StatelessWidget {
   final controller;
+  final VoidCallback onSave;
+  final VoidCallback onCancel;
 
-  VoidCallback onSave;
-  VoidCallback onCancel;
-
-  DialogBox({
+  const DialogBox({
     super.key,
     required this.controller,
     required this.onSave,
@@ -26,9 +25,9 @@ class DialogBox extends StatelessWidget {
             TextField(
               controller: controller,
               decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Add a New Task',
-              ),
+                  border: OutlineInputBorder(),
+                  hintText: 'Add a New Task',
+                  hintStyle: TextStyle(color: Color.fromARGB(134, 87, 85, 85))),
             ),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
