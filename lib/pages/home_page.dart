@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:todo_app/data/todoListDatabase.dart';
 import 'package:todo_app/util/todo_tile.dart';
 
 import '../util/dialog_box.dart';
@@ -11,25 +13,34 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final _myBox = Hive.box('myBox');
   final _controller = TextEditingController();
-  List toDoList = [
-    ['Write some codes', false],
-    ['Review code', false],
-  ];
+  TodoDatabase db = TodoDatabase();
+
+  @override
+  void initState() {
+    if (_myBox.get('TODOLIST') == null) {
+      db.createInitialData();
+    } else {
+      db.loadData();
+    }
+    super.initState();
+  }
 
   void checkboxChanged(bool? value, int index) {
     setState(() {
-      toDoList[index][1] = !toDoList[index][1];
+      db.toDoList[index][1] = !db.toDoList[index][1];
     });
+    db.updateDatabase();
   }
 
   void saveNewTask() {
     setState(() {
-      toDoList.add([_controller.text, false]);
+      db.toDoList.add([_controller.text, false]);
       _controller.clear();
     });
-
     Navigator.pop(context);
+    db.updateDatabase();
   }
 
   void createNewTask() {
@@ -45,8 +56,9 @@ class _HomePageState extends State<HomePage> {
 
   void deleteTask(int index) {
     setState(() {
-      toDoList.removeAt(index);
+      db.toDoList.removeAt(index);
     });
+    db.updateDatabase();
   }
 
   @override
@@ -64,10 +76,10 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       body: ListView.builder(
-          itemCount: toDoList.length,
+          itemCount: db.toDoList.length,
           itemBuilder: (context, index) => ToDoTile(
-                taskName: toDoList[index][0],
-                isTaskCompleted: toDoList[index][1],
+                taskName: db.toDoList[index][0],
+                isTaskCompleted: db.toDoList[index][1],
                 onChanged: (value) => checkboxChanged(value, index),
                 onDelete: (context) => deleteTask(index),
               )),
