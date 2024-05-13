@@ -1,57 +1,38 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 class ToDoTile extends StatelessWidget {
   final String taskName;
-  final bool taskCompleted;
+  final bool isTaskCompleted;
   final Function(bool?)? onChanged;
-  final Function(BuildContext)? deleteFunction;
-
   const ToDoTile({
     super.key,
-    required this.taskName,
-    required this.taskCompleted,
     required this.onChanged,
-    required this.deleteFunction,
+    required this.taskName,
+    required this.isTaskCompleted,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 25, right: 25, top: 25),
-      child: Slidable(
-        endActionPane: ActionPane(
-          motion: const StretchMotion(),
+      padding: const EdgeInsets.only(top: 25, left: 25, right: 25),
+      child: Container(
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+            color: Colors.blue, borderRadius: BorderRadius.circular(12)),
+        child: Row(
           children: [
-            SlidableAction(
-              borderRadius: BorderRadius.circular(12),
-              onPressed: deleteFunction,
-              icon: Icons.delete,
-              backgroundColor: Colors.red,
+            Checkbox(
+              value: isTaskCompleted,
+              onChanged: onChanged,
+              activeColor: Colors.blue,
+              shape: const CircleBorder(),
             ),
-          ],
-        ),
-        child: Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.lightBlue,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            children: [
-              Checkbox(
-                value: taskCompleted,
-                onChanged: onChanged,
-                activeColor: Colors.black,
-              ),
-              Text(
-                taskName,
+            Text(taskName,
                 style: TextStyle(
+                    fontWeight: FontWeight.w400,
                     decoration:
-                        taskCompleted ? TextDecoration.lineThrough : null),
-              ),
-            ],
-          ),
+                        isTaskCompleted ? TextDecoration.lineThrough : null)),
+          ],
         ),
       ),
     );
