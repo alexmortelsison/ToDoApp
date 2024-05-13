@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/const.dart';
-import 'package:todo_app/util/dialog_box.dart';
 
+import '../util/dialog_box.dart';
 import '../util/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
@@ -12,41 +12,41 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final controller = TextEditingController();
+  final _mycontroller = TextEditingController();
 
-  List todoList = [
-    ['Write some codes', false],
-    ['Review my codes', false]
+  List toDoList = [
+    ['Write some code', false],
+    ['Review code', false]
   ];
-
-  void checkboxChanged(bool? value, int index) {
-    setState(() {
-      todoList[index][1] = !todoList[index][1];
-    });
-  }
 
   void saveNewTask() {
     setState(() {
-      todoList.add([controller.text, false]);
-      controller.clear();
+      toDoList.add([_mycontroller.text, false]);
     });
     Navigator.pop(context);
+    _mycontroller.clear();
   }
 
   void createNewTask() {
     showDialog(
       context: context,
       builder: (context) => DialogBox(
-        controller: controller,
         onSave: saveNewTask,
         onCancel: () => Navigator.pop(context),
+        controller: _mycontroller,
       ),
     );
   }
 
   void deleteTask(int index) {
     setState(() {
-      todoList.removeAt(index);
+      toDoList.removeAt(index);
+    });
+  }
+
+  void checkboxChanged(bool? value, int index) {
+    setState(() {
+      toDoList[index][1] = !toDoList[index][1];
     });
   }
 
@@ -54,24 +54,22 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        onPressed: createNewTask,
-        child: const Icon(Icons.add, color: Colors.white),
-      ),
+          onPressed: createNewTask,
+          child: const Icon(
+            Icons.add,
+          )),
       appBar: AppBar(
-        backgroundColor: kPrimaryColor,
-        title: const Center(
-          child: Text(
-            'My ToDo',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
+        title: const Text(
+          'ToDo',
+          style: TextStyle(fontWeight: FontWeight.w900),
         ),
       ),
       body: ListView.builder(
-        itemCount: todoList.length,
+        itemCount: toDoList.length,
         itemBuilder: (context, index) => ToDoTile(
+          taskName: toDoList[index][0],
+          isCompleted: toDoList[index][1],
           onChanged: (value) => checkboxChanged(value, index),
-          taskName: todoList[index][0],
-          isTaskCompleted: todoList[index][1],
           deleteFunction: (context) => deleteTask(index),
         ),
       ),
