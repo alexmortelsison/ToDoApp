@@ -1,11 +1,11 @@
 import 'package:hive/hive.dart';
 
-class TodoDatabase {
+class ToDoDatabase {
   final _myBox = Hive.box('myBox');
 
   List toDoList = [];
 
-  void createInitialData() {
+  void createInitialState() {
     toDoList = [
       ['Write some codes', false],
       ['Review code', false],
@@ -16,7 +16,7 @@ class TodoDatabase {
     toDoList = _myBox.get('TODOLIST');
   }
 
-  void updateDatabase() {
+  void updateData() {
     _myBox.put('TODOLIST', toDoList);
   }
 }

@@ -12,6 +12,8 @@ class MyButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+      color: Colors.blue,
       onPressed: onPressed,
       child: Text(text),
     );

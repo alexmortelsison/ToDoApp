@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
-import 'package:todo_app/data/todoListDatabase.dart';
-import 'package:todo_app/util/todo_tile.dart';
+import 'package:todo_app/const.dart';
+import 'package:todo_app/data/database.dart';
 
 import '../util/dialog_box.dart';
+import '../util/todo_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,17 +14,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final _myBox = Hive.box('myBox');
-  final _controller = TextEditingController();
-  TodoDatabase db = TodoDatabase();
+  final _mybox = Hive.box('myBox');
+  final TextEditingController _controller = TextEditingController();
+  final ToDoDatabase db = ToDoDatabase();
 
   @override
   void initState() {
-    if (_myBox.get('TODOLIST') == null) {
-      db.createInitialData();
-    } else {
-      db.loadData();
-    }
+    _mybox.get('TODOLIST') == null ? db.createInitialState() : db.loadData();
     super.initState();
   }
 
@@ -31,7 +28,14 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       db.toDoList[index][1] = !db.toDoList[index][1];
     });
-    db.updateDatabase();
+    db.updateData();
+  }
+
+  void deleteTask(int index) {
+    setState(() {
+      db.toDoList.removeAt(index);
+    });
+    db.updateData();
   }
 
   void saveNewTask() {
@@ -40,32 +44,22 @@ class _HomePageState extends State<HomePage> {
       _controller.clear();
     });
     Navigator.pop(context);
-    db.updateDatabase();
+    db.updateData();
   }
 
-  void createNewTask() {
-    showDialog(
+  void createNewTask() => showDialog(
       context: context,
       builder: (context) => DialogBox(
-        onSave: saveNewTask,
-        onCancel: () => Navigator.pop(context),
-        controller: _controller,
-      ),
-    );
-  }
-
-  void deleteTask(int index) {
-    setState(() {
-      db.toDoList.removeAt(index);
-    });
-    db.updateDatabase();
-  }
+            onSave: saveNewTask,
+            onCancel: () => Navigator.pop(context),
+            controller: _controller,
+          ));
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.blue,
+        backgroundColor: kPrimaryColor,
         onPressed: createNewTask,
         child: const Icon(Icons.add),
       ),
